@@ -1,4 +1,4 @@
-module simple-webserver
+module github.com/HamzaMasood1/heroku-test
 
 go 1.21.3
 
