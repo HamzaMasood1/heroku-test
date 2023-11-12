@@ -1,1 +1,1 @@
-web: simple-webserver
+web: heroku-test
