@@ -14,14 +14,13 @@ func main() {
 		port = "8080"
 	}
 	router := httprouter.New()
-	router.GET("/", Index)
 
 	router.GET("/hello/:name", Hello)
+	router.GET("/test", TestingHandler)
+	router.POST("/markdown", GenerateMarkdown)
 
-	//http.HandleFunc("/markdown", GenerateMarkdown)
-	//http.HandleFunc("/test", TestingHandler)
-	//
-	//http.Handle("/", http.FileServer(http.Dir("public")))
+	//serve static files from the root path "/"
+	router.NotFound = http.FileServer(http.Dir("public"))
 
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
@@ -36,21 +35,14 @@ func Hello(writer http.ResponseWriter, request *http.Request, params httprouter.
 	}
 }
 
-func Index(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	_, err := fmt.Fprintln(writer, "Welcome!")
-	if err != nil {
-		return
-	}
-}
-
-func TestingHandler(writer http.ResponseWriter, request *http.Request) {
+func TestingHandler(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	_, err := writer.Write([]byte("Hello"))
 	if err != nil {
 		return
 	}
 }
 
-func GenerateMarkdown(rw http.ResponseWriter, r *http.Request) {
+func GenerateMarkdown(rw http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	markdown := blackfriday.MarkdownCommon([]byte(r.FormValue("body")))
 	fmt.Println(r.FormValue("body"))
 	_, err := rw.Write(markdown)
